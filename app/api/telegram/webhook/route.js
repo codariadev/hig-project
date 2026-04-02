@@ -15,6 +15,8 @@ export async function POST(request) {
         const agendamentoId = data.replace("confirm_", "");
         const agendamento = agendamentos.get(agendamentoId);
 
+        console.log("Agendamento:", agendamento); // Debug
+
         if (!agendamento) {
           return Response.json({ error: "Agendamento não encontrado" });
         }
