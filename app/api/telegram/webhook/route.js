@@ -1,6 +1,6 @@
-import { getConsultorByNome } from "@/lib/consultores";
-import { enviarEmailConfirmacao } from "@/lib/email";
-import { agendamentos } from "@/lib/agendamentos";
+import { getConsultorByNome } from "../../../lib/consultores";
+import { enviarEmailConfirmacao } from "../../../lib/email";
+import { agendamentos } from "../../agendamento/route";
 
 export async function POST(request) {
   try {
