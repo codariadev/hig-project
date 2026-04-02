@@ -33,7 +33,7 @@ export async function enviarEmailConfirmacao(consultor, agendamento) {
         <li><strong>Modelo:</strong> ${agendamento.modelo}</li>
         <li><strong>Cor:</strong> ${agendamento.cor}</li>
         <li><strong>Placa:</strong> ${agendamento.placa}</li>
-        <li><strong>Data de Entrega:</strong> ${formatarData(dataEntrega)}</li>
+        <li><strong>Data de Entrega:</strong> ${formatarData(agendamento.dataEntrega)}</li>
       </ul>
       
       <p>Obrigado!</p>
