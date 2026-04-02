@@ -8,7 +8,7 @@ export async function POST(request) {
 
     // Verificar se é um callback_query (botão clicado)
     if (body.callback_query) {
-      const { data, id: callbackId, from } = body.callback_query;
+      const { data, id: callbackId } = body.callback_query;
 
       // Extrair agendamento ID do callback_data
       if (data.startsWith("confirm_")) {

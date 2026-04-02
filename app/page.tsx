@@ -63,7 +63,7 @@ export default function App() {
   };
 
   return (
-    <div className="w-full h-screen flex flex-row justify-center items-center border">
+    <div className="w-full h-screen flex flex-row justify-center items-center">
       <div className="mt-4 flex flex-col bg-gray-900 rounded-lg p-4 shadow-sm max-w-200 max-h-min">
         <h2 className="text-white font-bold text-lg text-center">
           Agendamento

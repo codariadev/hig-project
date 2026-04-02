@@ -4,6 +4,17 @@ import { getConsultorByNome } from "../../lib/consultores";
 const agendamentos = new Map();
 
 export async function POST(request) {
+
+    function formatarData(dataISO) {
+  if (!dataISO) return "Não informada";
+
+  const data = new Date(dataISO);
+
+  return new Intl.DateTimeFormat("pt-BR", {
+    dateStyle: "short",
+    timeStyle: "short",
+  }).format(data);
+}
   try {
     const { consultor, modelo, cor, placa, dataEntrega } = await request.json();
 
@@ -43,7 +54,7 @@ export async function POST(request) {
 🚗 *Modelo:* ${modelo}
 🎨 *Cor:* ${cor}
 🔢 *Placa:* ${placa}
-📅 *Data de Entrega:* ${dataEntrega || "Não informada"}
+📅 📅 *Data de Entrega:* ${formatarData(dataEntrega)}
 
 ID: \`${agendamentoId}\`
     `.trim();

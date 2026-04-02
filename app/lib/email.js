@@ -11,18 +11,29 @@ const transporter = nodemailer.createTransport({
 });
 
 export async function enviarEmailConfirmacao(consultor, agendamento) {
+    function formatarData(dataISO) {
+  if (!dataISO) return "Não informada";
+
+  const data = new Date(dataISO);
+
+  return new Intl.DateTimeFormat("pt-BR", {
+    dateStyle: "short",
+    timeStyle: "short",
+  }).format(data);
+}
+    
   try {
     const htmlContent = `
       <h2>Agendamento Confirmado! ✅</h2>
       <p>Olá ${consultor.nome},</p>
-      <p>Seu agendamento de higienização foi confirmado com sucesso!</p>
+      <p>Seu agendamento de higienização foi finalizado com sucesso e está pronto para entrega!</p>
       
       <h3>Detalhes do Agendamento:</h3>
       <ul>
         <li><strong>Modelo:</strong> ${agendamento.modelo}</li>
         <li><strong>Cor:</strong> ${agendamento.cor}</li>
         <li><strong>Placa:</strong> ${agendamento.placa}</li>
-        <li><strong>Data de Entrega:</strong> ${agendamento.dataEntrega || "Não informada"}</li>
+        <li><strong>Data de Entrega:</strong> ${formatarData(dataEntrega)}</li>
       </ul>
       
       <p>Obrigado!</p>
@@ -31,7 +42,7 @@ export async function enviarEmailConfirmacao(consultor, agendamento) {
     await transporter.sendMail({
       from: process.env.SMTP_FROM_EMAIL,
       to: consultor.email,
-      subject: "✅ Agendamento Confirmado - Higienização de Veículo",
+      subject: "✅ Agendamento Finalizado - Higienização de Veículo",
       html: htmlContent,
     });
 
