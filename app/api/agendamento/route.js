@@ -6,16 +6,6 @@ import { db } from "../../../firebase-env/firebaseConfig";
 
 export async function POST(request) {
 
-    function formatarData(dataISO) {
-  if (!dataISO) return "Não informada";
-
-  const data = new Date(dataISO);
-
-  return new Intl.DateTimeFormat("pt-BR", {
-    dateStyle: "short",
-    timeStyle: "short",
-  }).format(data);
-}
   try {
     const { consultor, modelo, cor, placa, dataEntrega } = await request.json();
 
@@ -43,10 +33,8 @@ export async function POST(request) {
       cor,
       placa,
       dataEntrega,
+      horaEntrega,
     };
-
-    // Armazenar agendamento
-    // agendamentos.set(agendamentoId, agendamentoData);
     console.log("Agendamento recebido:", agendamentoData);
     await setDoc(doc(db, 'agendamentos', agendamentoId), agendamentoData);
     console.log("Agendamento salvo no Firestore:");
@@ -60,7 +48,8 @@ export async function POST(request) {
 🚗 <b>Modelo:</b> ${modelo}
 🎨 <b>Cor:</b> ${cor}
 🔢 <b>Placa:</b> ${placa}
-📅 <b>Data de Entrega:</b> ${formatarData(dataEntrega)}
+📅 <b>Data de Entrega:</b> ${dataEntrega}
+🕐 <b>Hora de Entrega:</b> ${horaEntrega}
 
 ID: <code>${agendamentoId}</code>
 `.trim();;

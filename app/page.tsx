@@ -2,6 +2,11 @@
 
 import { useState, useEffect } from "react";
 
+const HORAS_DISPONIVEIS = Array.from({ length: 11 }, (_, i) => {
+  const hora = 9 + i;
+  return `${hora.toString().padStart(2, '0')}:00`;
+});
+
 export default function App() {
   const [consultores, setConsultores] = useState<{ id: string; nome: string }[]>([]);
   const [formData, setFormData] = useState({
@@ -10,11 +15,12 @@ export default function App() {
     cor: "",
     placa: "",
     dataEntrega: "",
+    horaEntrega: "",
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  // Carregar consultores do servidor
+
   useEffect(() => {
     fetch("/api/consultores")
       .then((res) => res.json())
@@ -50,6 +56,7 @@ export default function App() {
           cor: "",
           placa: "",
           dataEntrega: "",
+          horaEntrega: "",
         });
       } else {
         setMessage(`❌ Erro: ${data.error}`);
@@ -149,10 +156,30 @@ export default function App() {
                 className="w-full bg-gray-800 rounded-md border-gray-700 text-white px-2 py-1"
                 id="dataEntrega"
                 name="dataEntrega"
-                type="datetime-local"
+                type="date"
                 value={formData.dataEntrega}
                 onChange={handleChange}
               />
+            </div>
+            <div className="flex-1">
+              <label className="text-white" htmlFor="horaEntrega">
+                Hora de entrega
+              </label>
+              <select
+                className="w-full bg-gray-800 rounded-md border-gray-700 text-white px-2 py-1"
+                id="horaEntrega"
+                name="horaEntrega"
+                value={formData.horaEntrega}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Selecione a hora</option>
+                {HORAS_DISPONIVEIS.map((hora) => (
+                  <option key={hora} value={hora}>
+                    {hora}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 

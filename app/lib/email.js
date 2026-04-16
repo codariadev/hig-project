@@ -34,6 +34,7 @@ export async function enviarEmailConfirmacao(consultor, agendamento) {
         <li><strong>Cor:</strong> ${agendamento.cor}</li>
         <li><strong>Placa:</strong> ${agendamento.placa}</li>
         <li><strong>Data de Entrega:</strong> ${formatarData(agendamento.dataEntrega)}</li>
+        <li><strong>Hora de Entrega:</strong> ${formatarData(agendamento.horaEntrega)}</li>
       </ul>
       
       <p>Obrigado!</p>
