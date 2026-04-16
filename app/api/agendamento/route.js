@@ -7,9 +7,9 @@ import { db } from "../../../firebase-env/firebaseConfig";
 export async function POST(request) {
 
   try {
-    const { consultor, modelo, cor, placa, dataEntrega } = await request.json();
+    const { consultor, modelo, cor, placa, dataEntrega, horaEntrega } = await request.json();
 
-    if (!consultor || !modelo || !cor || !placa || !dataEntrega) {
+    if (!consultor || !modelo || !cor || !placa || !dataEntrega || !horaEntrega) {
       return Response.json(
         { error: "Todos os campos são obrigatórios" },
         { status: 400 }
