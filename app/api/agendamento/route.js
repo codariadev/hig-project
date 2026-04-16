@@ -1,7 +1,15 @@
+import { addDoc, collection, getDocs } from "firebase/firestore";
 import { getConsultorByNome } from "../../lib/consultores";
+import { db } from "../../../firebase-env/firebaseConfig";
 
 // Armazenar agendamentos em memória (temporário)
-const agendamentos = new Map();
+const agendamentos = await getDocs(collection(db, 'agendamentos')).then((querySnapshot) => {
+  const agendamentoMap = new Map();
+  querySnapshot.forEach((doc) => {
+    agendamentoMap.set(doc.id, doc.data());
+  });
+  return agendamentoMap;
+});
 
 export async function POST(request) {
 
@@ -18,7 +26,7 @@ export async function POST(request) {
   try {
     const { consultor, modelo, cor, placa, dataEntrega } = await request.json();
 
-    if (!consultor || !modelo || !cor || !placa) {
+    if (!consultor || !modelo || !cor || !placa || !dataEntrega) {
       return Response.json(
         { error: "Todos os campos são obrigatórios" },
         { status: 400 }
@@ -45,19 +53,24 @@ export async function POST(request) {
     };
 
     // Armazenar agendamento
-    agendamentos.set(agendamentoId, agendamentoData);
+    // agendamentos.set(agendamentoId, agendamentoData);
+    console.log("Agendamento recebido:", agendamentoData);
+    await addDoc(collection(db, 'agendamentos'), agendamentoData);
+    console.log("Agendamento salvo no Firestore:");
+
 
     const mensagem = `
-📋 *Novo Agendamento de Higienização*
+📋 <b>Novo Agendamento de Higienização</b>
 
-👤 *Consultor:* ${consultor}
-🚗 *Modelo:* ${modelo}
-🎨 *Cor:* ${cor}
-🔢 *Placa:* ${placa}
-📅 📅 *Data de Entrega:* ${formatarData(dataEntrega)}
+👤 <b>Consultor:</b> ${consultor.replace(/</g, '&lt;').replace(/>/g, '&gt;')}
+✉️ <b>Email:</b> ${consultorData.email.replace(/</g, '&lt;').replace(/>/g, '&gt;')}
+🚗 <b>Modelo:</b> ${modelo}
+🎨 <b>Cor:</b> ${cor}
+🔢 <b>Placa:</b> ${placa}
+📅 <b>Data de Entrega:</b> ${formatarData(dataEntrega)}
 
-ID: \`${agendamentoId}\`
-    `.trim();
+ID: <code>${agendamentoId}</code>
+`.trim();;
 
     const response = await fetch(
       `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
@@ -67,7 +80,7 @@ ID: \`${agendamentoId}\`
         body: JSON.stringify({
           chat_id: process.env.TELEGRAM_CLEANER_CHAT_ID,
           text: mensagem,
-          parse_mode: "Markdown",
+          parse_mode: "HTML",
           reply_markup: {
             inline_keyboard: [
               [
@@ -78,12 +91,15 @@ ID: \`${agendamentoId}\`
               ],
             ],
           },
-        } ),
+        }),
       }
     );
 
+    console.log("Resposta do Telegram status:", response.status);
+    console.log("Resposta do Telegram body:", await response.text());
+
     if (!response.ok) {
-      throw new Error("Erro ao enviar para Telegram");
+      throw new Error( `Erro ao enviar para o Telegram: ${response.status} - ${await response.text()}`)
     }
 
     return Response.json({ success: true, message: "Agendamento enviado!" });
