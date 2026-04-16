@@ -1,8 +1,8 @@
 import nodemailer from "nodemailer";
 
-const transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransporter({
   host: process.env.SMTP_HOST,
-  port: parseInt(process.env.SMTP_PORT),
+  port: parseInt(process.env.SMTP_PORT || "587"),
   secure: process.env.SMTP_PORT === "465",
   auth: {
     user: process.env.SMTP_USER,
@@ -10,47 +10,57 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export async function enviarEmailConfirmacao(consultor, agendamento) {
-    function formatarData(dataISO) {
+function formatarData(dataISO) {
   if (!dataISO) return "Não informada";
-
+  
   const data = new Date(dataISO);
+  if (isNaN(data.getTime())) {
+    console.error("Data inválida recebida:", dataISO);
+    return dataISO;
+  }
 
   return new Intl.DateTimeFormat("pt-BR", {
     dateStyle: "short",
     timeStyle: "short",
   }).format(data);
 }
-    
+
+function formatarHora(horaStr) {
+  return horaStr || "Não informada";
+}
+
+export async function enviarEmailConfirmacao(consultor, agendamento) {
   try {
     const htmlContent = `
       <h2>Agendamento Confirmado! ✅</h2>
-      <p>Olá ${consultor.nome},</p>
-      <p>Seu agendamento de higienização foi finalizado com sucesso e está pronto para entrega!</p>
+      <p>Olá ${consultor.nome || 'Consultor'},</p>
+      <p>Seu agendamento de higienização foi finalizado com sucesso!</p>
       
       <h3>Detalhes do Agendamento:</h3>
       <ul>
-        <li><strong>Modelo:</strong> ${agendamento.modelo}</li>
-        <li><strong>Cor:</strong> ${agendamento.cor}</li>
-        <li><strong>Placa:</strong> ${agendamento.placa}</li>
+        <li><strong>Consultor:</strong> ${consultor.nome || 'N/I'}</li>
+        <li><strong>Modelo:</strong> ${agendamento.modelo || 'N/I'}</li>
+        <li><strong>Cor:</strong> ${agendamento.cor || 'N/I'}</li>
+        <li><strong>Placa:</strong> ${agendamento.placa || 'N/I'}</li>
         <li><strong>Data de Entrega:</strong> ${formatarData(agendamento.dataEntrega)}</li>
-        <li><strong>Hora de Entrega:</strong> ${formatarData(agendamento.horaEntrega)}</li>
+        <li><strong>Hora de Entrega:</strong> ${formatarHora(agendamento.horaEntrega)}</li>
+        <li><strong>ID:</strong> ${agendamento.id}</li>
       </ul>
       
-      <p>Obrigado!</p>
+      <p>Obrigado por usar nossos serviços!</p>
     `;
 
     await transporter.sendMail({
-      from: process.env.SMTP_FROM_EMAIL,
+      from: `"Higienização" <${process.env.SMTP_FROM_EMAIL}>`,
       to: consultor.email,
-      subject: "✅ Agendamento Finalizado - Higienização de Veículo",
+      subject: `✅ Agendamento ${agendamento.id} Finalizado`,
       html: htmlContent,
     });
 
-    console.log(`Email enviado para ${consultor.email}`);
+    console.log(`✅ Email enviado para ${consultor.email} (ID: ${agendamento.id})`);
     return true;
   } catch (error) {
-    console.error("Erro ao enviar email:", error);
+    console.error("❌ Erro ao enviar email:", error);
     return false;
   }
 }
