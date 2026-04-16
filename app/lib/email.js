@@ -10,20 +10,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-function formatarData(dataISO) {
-  if (!dataISO) return "Não informada";
-  
-  const data = new Date(dataISO);
-  if (isNaN(data.getTime())) {
-    console.error("Data inválida recebida:", dataISO);
-    return dataISO;
-  }
-
-  return new Intl.DateTimeFormat("pt-BR", {
-    dateStyle: "short",
-    timeStyle: "short",
-  }).format(data);
-}
 
 function formatarHora(horaStr) {
   return horaStr || "Não informada";
@@ -42,7 +28,7 @@ export async function enviarEmailConfirmacao(consultor, agendamento) {
         <li><strong>Modelo:</strong> ${agendamento.modelo || 'N/I'}</li>
         <li><strong>Cor:</strong> ${agendamento.cor || 'N/I'}</li>
         <li><strong>Placa:</strong> ${agendamento.placa || 'N/I'}</li>
-        <li><strong>Data de Entrega:</strong> ${formatarData(agendamento.dataEntrega)}</li>
+        <li><strong>Data de Entrega:</strong> ${agendamento.dataEntrega}</li>
         <li><strong>Hora de Entrega:</strong> ${formatarHora(agendamento.horaEntrega)}</li>
         <li><strong>ID:</strong> ${agendamento.id}</li>
       </ul>
