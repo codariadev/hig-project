@@ -1,15 +1,8 @@
-import { addDoc, collection, getDocs } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { getConsultorByNome } from "../../lib/consultores";
 import { db } from "../../../firebase-env/firebaseConfig";
 
-// Armazenar agendamentos em memória (temporário)
-const agendamentos = await getDocs(collection(db, 'agendamentos')).then((querySnapshot) => {
-  const agendamentoMap = new Map();
-  querySnapshot.forEach((doc) => {
-    agendamentoMap.set(doc.id, doc.data());
-  });
-  return agendamentoMap;
-});
+
 
 export async function POST(request) {
 
@@ -55,7 +48,7 @@ export async function POST(request) {
     // Armazenar agendamento
     // agendamentos.set(agendamentoId, agendamentoData);
     console.log("Agendamento recebido:", agendamentoData);
-    await addDoc(collection(db, 'agendamentos'), agendamentoData);
+    await setDoc(doc(db, 'agendamentos', agendamentoId), agendamentoData);
     console.log("Agendamento salvo no Firestore:");
 
 
@@ -112,5 +105,3 @@ ID: <code>${agendamentoId}</code>
   }
 }
 
-// Exportar função para webhook
-export { agendamentos };
