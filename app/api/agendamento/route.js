@@ -9,7 +9,7 @@ export async function POST(request) {
   try {
     const { consultor, modelo, cor, placa, dataEntrega, horaEntrega, obs } = await request.json();
 
-    if (!consultor || !modelo || !cor || !placa || !dataEntrega || !horaEntrega || obs) {
+    if (!consultor || !modelo || !cor || !placa || !dataEntrega || !horaEntrega || !obs) {
       return Response.json(
         { error: "Todos os campos são obrigatórios" },
         { status: 400 }
