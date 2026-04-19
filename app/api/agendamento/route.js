@@ -7,9 +7,9 @@ import { db } from "../../../firebase-env/firebaseConfig";
 export async function POST(request) {
 
   try {
-    const { consultor, modelo, cor, placa, dataEntrega, horaEntrega } = await request.json();
+    const { consultor, modelo, cor, placa, dataEntrega, horaEntrega, obs } = await request.json();
 
-    if (!consultor || !modelo || !cor || !placa || !dataEntrega || !horaEntrega) {
+    if (!consultor || !modelo || !cor || !placa || !dataEntrega || !horaEntrega || obs) {
       return Response.json(
         { error: "Todos os campos são obrigatórios" },
         { status: 400 }
@@ -34,6 +34,7 @@ export async function POST(request) {
       placa,
       dataEntrega,
       horaEntrega,
+      obs,
     };
     console.log("Agendamento recebido:", agendamentoData);
     await setDoc(doc(db, 'agendamentos', agendamentoId), agendamentoData);
@@ -50,6 +51,7 @@ export async function POST(request) {
 🔢 <b>Placa:</b> ${placa}
 📅 <b>Data de Entrega:</b> ${dataEntrega}
 🕐 <b>Hora de Entrega:</b> ${horaEntrega}
+✉️ <b>Observações:</b> ${obs}
 
 ID: <code>${agendamentoId}</code>
 `.trim();;

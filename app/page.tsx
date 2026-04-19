@@ -16,10 +16,10 @@ export default function App() {
     placa: "",
     dataEntrega: "",
     horaEntrega: "",
+    obs: "",
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-
 
   useEffect(() => {
     fetch("/api/consultores")
@@ -57,6 +57,7 @@ export default function App() {
           placa: "",
           dataEntrega: "",
           horaEntrega: "",
+          obs: "",
         });
       } else {
         setMessage(`❌ Erro: ${data.error}`);
@@ -181,6 +182,20 @@ export default function App() {
                 ))}
               </select>
             </div>
+          </div>
+
+          {/* CORREÇÃO: Adicionado mt-4 e removido flex-1 da textarea */}
+          <div className="mt-4 flex-1">
+            <label className="text-white" htmlFor="obs">
+              Observações
+            </label>
+            <textarea
+              className="w-full bg-gray-800 rounded-md border-gray-700 text-white px-2 pt-2 pb-4 leading-none min-h-20 resize-none"
+              id="obs"
+              name="obs"
+              value={formData.obs}
+              onChange={handleChange}
+            />
           </div>
 
           <div className="mt-4 flex justify-center">
