@@ -184,7 +184,6 @@ export default function App() {
             </div>
           </div>
 
-          {/* CORREÇÃO: Adicionado mt-4 e removido flex-1 da textarea */}
           <div className="mt-4 flex-1">
             <label className="text-white" htmlFor="obs">
               Observações
