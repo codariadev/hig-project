@@ -1,8 +1,21 @@
-import { doc, setDoc } from "firebase/firestore";
+import { collection, doc, getDocs, setDoc } from "firebase/firestore";
 import { getConsultorByNome } from "../../lib/consultores";
 import { db } from "../../../firebase-env/firebaseConfig";
 
-
+export async function GET() {
+  try {
+    const querySnapshot = await getDocs(collection(db, 'agendamentos'));
+    const agendamentos = querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    
+    return Response.json(agendamentos);
+  } catch (error) {
+    console.error("Erro ao buscar agendamentos:", error);
+    return Response.json({ error: "Erro ao buscar agendamentos" }, { status: 500 });
+  }
+}
 
 export async function POST(request) {
 
@@ -54,7 +67,7 @@ export async function POST(request) {
 ✉️ <b>Observações:</b> ${obs}
 
 ID: <code>${agendamentoId}</code>
-`.trim();;
+`.trim();
 
     const response = await fetch(
       `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
@@ -77,6 +90,7 @@ ID: <code>${agendamentoId}</code>
           },
         }),
       }
+      
     );
 
     console.log("Resposta do Telegram status:", response.status);
