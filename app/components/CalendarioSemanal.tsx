@@ -14,7 +14,7 @@ interface Agendamento {
 }
 
 const HORAS_DISPONIVEIS = Array.from({ length: 11 }, (_, i) => {
-  const hora = 8 + i;
+  const hora = 9 + i;
   return `${hora.toString().padStart(2, "0")}:00`;
 });
 
@@ -103,15 +103,18 @@ export default function CalendarioSemanal() {
     return [];
   };
 
-  const verificarAgendamento = (data: Date, hora: string) => {
-    return agendamentos.find((a) => {
-      const dataAgendamento = new Date(a.dataEntrega);
-      return (
-        dataAgendamento.toDateString() === data.toDateString() &&
-        a.horaEntrega === hora
-      );
-    });
-  };
+  const formatarDataISO = (data: Date) => {
+  const ano = data.getFullYear();
+  const mes = String(data.getMonth() + 1).padStart(2, "0");
+  const dia = String(data.getDate()).padStart(2, "0");
+  return `${ano}-${mes}-${dia}`;
+};
+
+const verificarAgendamento = (data: Date, hora: string) => {
+  const dataFormatada = formatarDataISO(data);
+
+  return agendamentos.find((a) => a.dataEntrega === dataFormatada && a.horaEntrega === hora);
+};
 
   const nomeDia = (index: number) => {
     const dias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
