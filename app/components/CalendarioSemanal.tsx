@@ -149,7 +149,7 @@ const verificarAgendamento = (data: Date, hora: string) => {
   return (
     <div className="animate-fadeIn w-full">
       <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-2xl p-8 shadow-2xl border border-slate-700/50 w-full">
-        <div className="mb-8 flex justify-between items-center border">
+        <div className="mb-8 flex justify-between items-center">
           <h3 className="text-2xl font-bold text-white">📅 Agenda da Semana</h3>
           <p className="text-slate-400 text-sm">Visualize os horários disponíveis e agendados</p>
         </div>
