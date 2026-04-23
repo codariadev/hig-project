@@ -1,4 +1,4 @@
-"use client";
+se"use client";
 
 import { useEffect, useState } from "react";
 
@@ -234,9 +234,6 @@ const verificarAgendamento = (data: Date, hora: string) => {
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded bg-slate-600"></div>
             <span className="text-slate-400">Passada</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-slate-400 text-xs">⏱️ Cada agendamento leva 1 hora</span>
           </div>
         </div>
       </div>
